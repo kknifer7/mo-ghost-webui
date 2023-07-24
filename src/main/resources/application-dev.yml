@@ -1,0 +1,51 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:data/mo_ghost.db
+    driver-class-name: org.sqlite.JDBC
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 510MB
+  # JPA
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          #每批500条提交
+          batch_size: 500
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+  application:
+    name: mo-ghost
+  config:
+    activate:
+      on-profile: dev
+mo-ghost:
+  storage:
+    save-path: E:/Study/dev/Java/mo-ghost-webui/data
+    tmp-path: E:/Study/dev/Java/mo-ghost-webui/data/tmp
+  debug:
+    disable-auth: on
+server:
+  port: 9936
+# tianai captcha
+captcha:
+  expire:
+    default: 10000
+    # 文字点选验证码 过期时间设置大一点
+    WORD_IMAGE_CLICK: 60000
+  cache:
+    enabled: true
+    cache-size: 20
+  secondary:
+    enabled: false
+  # 不初始化默认的资源文件
+  init-default-resource: false
