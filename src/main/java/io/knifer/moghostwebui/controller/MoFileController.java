@@ -166,4 +166,17 @@ public class MoFileController {
     ){
         service.downloadBySingleReleaseCDKCodeAndReleaseId(code, releaseId);
     }
+
+    /**
+     * 替换文件
+     * @param file 上传的文件
+     * @param id 要替换的文件信息ID
+     * @return void
+     */
+    @PatchMapping("/{id}")
+    public ApiResult<Void> replace(MultipartFile file, @PathVariable("id") Integer id){
+        service.replace(file, id);
+
+        return ApiResult.ok();
+    }
 }

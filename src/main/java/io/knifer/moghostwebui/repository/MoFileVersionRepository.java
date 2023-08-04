@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -17,6 +18,8 @@ import java.util.Set;
  */
 @Repository
 public interface MoFileVersionRepository extends JpaRepository<MoFileVersion, MoFileVersionKey> {
+
+    Optional<MoFileVersion> findByIdMoFileId(Integer moFileId);
 
     boolean existsByIdMoFileIdAndIdVersionId(Integer moFileId, Integer versionId);
 

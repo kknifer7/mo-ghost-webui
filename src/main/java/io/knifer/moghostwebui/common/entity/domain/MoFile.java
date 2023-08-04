@@ -75,18 +75,28 @@ public class MoFile extends BaseEntity<Integer>{
         return new File(this.getPath());
     }
 
+    public void refresh(){
+        File file = toFile();
+
+        if (!file.exists() || !file.isFile()){
+            return;
+        }
+        this.saveName = file.getName();
+        this.size = file.length();
+        try {
+            this.setHashValue(CodecUtil.sha256String(file));
+        } catch (IOException
+                e) {
+            MoException.throwOut(ErrorCodes.UNKNOWN, e);
+        }
+    }
+
     public static MoFile of(MultipartFile originFile, File file){
         MoFile result = new MoFile();
 
         result.setOriginName(originFile.getOriginalFilename());
-        result.setSaveName(file.getName());
         result.setPath(file.getAbsolutePath());
-        result.setSize(file.length());
-        try {
-            result.setHashValue(CodecUtil.sha256String(file));
-        } catch (IOException e) {
-            MoException.throwOut(ErrorCodes.UNKNOWN, e);
-        }
+        result.refresh();
         result.setRemark(Strings.EMPTY);
 
         return result;

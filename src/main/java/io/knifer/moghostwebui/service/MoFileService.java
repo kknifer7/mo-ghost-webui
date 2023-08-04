@@ -460,4 +460,52 @@ public class MoFileService {
                     repository.save(file);
                 });
     }
+
+    /**
+     * 替换文件
+     * @param file 上传的文件
+     * @param id 要替换的文件信息ID
+     */
+    public void replace(MultipartFile file, Integer id){
+        String fileName = file.getOriginalFilename();
+
+        if (StringUtils.isBlank(fileName)){
+            return;
+        }
+        repository.findById(id)
+                .ifPresent(moFile -> {
+                    MoFileVersion mv = moFileVersionRepository.findByIdMoFileId(id).orElse(null);
+                    String newSaveName = RandomUtil.nextStorageName(fileName);
+                    Path newPath = mv == null ?
+                            Path.of(
+                                    STORAGE_PATH,
+                                    MoConstants.FREE_FILE_DIRECTORY_NAME,
+                                    newSaveName
+                            )
+                            :
+                            Path.of(
+                                    STORAGE_PATH,
+                                    MoConstants.VERSION_DIRECTORY_NAME,
+                                    String.valueOf(mv.getId().getVersionId()),
+                                    newSaveName
+                            );
+
+                    // 删除旧文件
+                    fileAssessor.deleteFile(moFile);
+                    // 存储新文件、更新对象数据
+                    moFile.setPath(newPath.toAbsolutePath().toString());
+                    moFile.setOriginName(fileName);
+                    try {
+                        Files.copy(
+                                file.getInputStream(),
+                                newPath
+                        );
+                    } catch (IOException e) {
+                        MoException.throwOut(ErrorCodes.UNKNOWN, e);
+                    }
+                    moFile.refresh();
+                    // 准备插入数据库的文件信息
+                    repository.save(moFile);
+                });
+    }
 }
