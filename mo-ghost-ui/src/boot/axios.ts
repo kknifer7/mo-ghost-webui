@@ -12,8 +12,10 @@ declare module '@vue/runtime-core' {
 
 // local-dev
 const baseURL = 'http://localhost:9100/api';
-// prod 乐视
+// prod ip
 //const baseURL = 'http://218.62.100.7:8002/backend';
+// prod 域名
+// const baseURL = 'https://smg.knifer.fun:8002/backend';
 const api = axios.create({ baseURL });
 
 api.defaults.headers.post['Content-Type'] = 'application/json';

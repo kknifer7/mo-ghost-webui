@@ -41,8 +41,11 @@ const moFileService = {
       timeout: 7200000,
     });
   },
-  getUploadUrl: function (files: unknown[], versionId?: number) {
+  getUploadUrl: function (versionId?: number) {
     return `${baseURL}/mo-file/${versionId ? versionId : ''}`;
+  },
+  getReplaceUrl: function (fileId: number) {
+    return `${baseURL}/mo-file/${fileId}`;
   },
   rename: async function (data: { id: number; name: string }) {
     return api.patch(`/mo-file/name/${data.id}/${data.name}`);
@@ -52,6 +55,9 @@ const moFileService = {
   },
   delete: async function (id: number) {
     return api.delete(`/mo-file/${id}`);
+  },
+  replace: async function (id: number) {
+    return api.patch(`/mo-file/${id}`);
   },
 };
 

@@ -59,6 +59,12 @@ export const columns = [
     align: 'center',
   },
   {
+    name: 'lastAccessAt',
+    label: '上次访问时间',
+    field: 'lastAccessAt',
+    align: 'center',
+  },
+  {
     name: 'lastAccessIP',
     label: '上次访问IP',
     field: 'lastAccessIP',

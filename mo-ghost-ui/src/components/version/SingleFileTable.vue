@@ -36,23 +36,43 @@
       <tr :props="props">
         <q-td key="originName" :props="props">
           <g-label :content="props.row.originName" :copy="false" :tip="false" />
-          <q-popup-edit
-            auto-save
-            @save="onRenameSave(props.row)"
-            v-model="props.row.originName"
-            v-slot="scope"
-          >
-            <q-input
-              v-model="scope.value"
-              :rules="[
-                (val) => stringUtils.isNotBlank(val) || '请输入文件名',
-                (val) => val.length <= 64 || '文件名不能超过64位',
-              ]"
-              dense
-              autofocus
-              counter
-            />
-          </q-popup-edit>
+          <q-menu ref="fileNameOpMenu" class="bg-primary">
+            <q-list class="text-white" dense>
+              <q-item clickable>
+                <q-item-section>
+                  <span><q-icon name="find_replace" />&nbsp;重命名</span>
+                </q-item-section>
+                <q-popup-edit
+                  auto-save
+                  @save="onRenameSave(props.row)"
+                  v-model="props.row.originName"
+                  v-slot="scope"
+                >
+                  <q-input
+                    v-model="scope.value"
+                    :rules="[
+                      (val) => stringUtils.isNotBlank(val) || '请输入文件名',
+                      (val) => val.length <= 64 || '文件名不能超过64位',
+                    ]"
+                    dense
+                    autofocus
+                    counter
+                  />
+                </q-popup-edit>
+              </q-item>
+              <q-item @click="onFileReplaceItemClick" clickable>
+                <q-item-seciton>
+                  <span><q-icon name="autorenew" />&nbsp;替换</span>
+                </q-item-seciton>
+                <q-dialog ref="replaceDialog">
+                  <file-replace-dialog
+                    :file-id="props.row.id"
+                    @finish="onFileReplaced"
+                  />
+                </q-dialog>
+              </q-item>
+            </q-list>
+          </q-menu>
         </q-td>
 
         <q-td key="path" :props="props">
@@ -119,11 +139,23 @@ import { moFileService } from '@api/service';
 import TableDeleteBtn from '@base/TableDeleteBtn.vue';
 import GLabel from '@base/GLabel.vue';
 import FileAddForm from '@/version/FileAddForm.vue';
+import FileReplaceDialog from '@/version/FileReplaceDialog.vue';
 import fileUtils from '@utils/file';
 import stringUtils from '@utils/string';
 
 function onFileAddFinish() {
   dataFetcher.onDataChanged();
+}
+
+const replaceDialog = ref();
+const fileNameOpMenu = ref();
+function onFileReplaceItemClick() {
+  replaceDialog.value.show();
+}
+function onFileReplaced() {
+  replaceDialog.value.hide();
+  fileNameOpMenu.value.hide();
+  onFileAddFinish();
 }
 
 async function onRenameSave(row: MoFile) {

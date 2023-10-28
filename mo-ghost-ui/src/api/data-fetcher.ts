@@ -68,7 +68,6 @@ abstract class BaseDataFetcher<T> implements DataFetcher {
     this.loading.value = true;
     const response = await updateSupplier(data);
     this.loading.value = false;
-    console.log(response);
     if (response.data && response.data.code === 200 && (await this.refresh())) {
       Notify.create({
         type: 'positive',

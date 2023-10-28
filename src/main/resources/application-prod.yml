@@ -30,8 +30,8 @@ spring:
       on-profile: prod
 mo-ghost:
   storage:
-    save-path: /var/mo-ghost/data
-    tmp-path: /tmp/mo-ghost
+    save-path: /home/xinhr/server/var/mo-ghost/data
+    tmp-path: /home/xinhr/server/tmp/mo-ghost
 server:
   port: 9936
 # tianai captcha

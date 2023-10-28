@@ -137,7 +137,7 @@
         </q-td>
 
         <q-td class="no-selection" key="expireAt" :props="props">
-          {{ props.row.expireAt }}
+          <g-label :content="props.row.expireAt" :max-length="10" />
           <q-popup-proxy
             @before-hide="onRowSave(props.row)"
             cover
@@ -165,6 +165,10 @@
             :color="props.row.expired ? 'negative' : 'positive'"
             :label="props.row.expired ? '过期' : '有效'"
           />
+        </q-td>
+
+        <q-td key="lastAccessAt" :props="props">
+          <g-label :content="props.row.lastAccessAt" :max-length="10" />
         </q-td>
 
         <q-td key="lastAccessIP" :props="props">
