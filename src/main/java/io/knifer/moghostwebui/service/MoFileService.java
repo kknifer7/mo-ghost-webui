@@ -395,6 +395,7 @@ public class MoFileService {
     private void updateSingleReleaseCDK(SingleReleaseCDK cdk){
         Pair<String, String> ipAndRegion = ipLocator.locate();
 
+        cdk.setLastAccessAt(LocalDateTime.now());
         cdk.setTotalAccess(cdk.getTotalAccess() + 1);
         cdk.setLastAccessIP(ipAndRegion.getFirst());
         cdk.setLastAccessRegion(ipAndRegion.getSecond());

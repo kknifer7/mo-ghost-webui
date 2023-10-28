@@ -22,8 +22,7 @@ import static cloud.tianai.captcha.generator.impl.StandardSliderImageCaptchaGene
 public class CaptchaInitializer extends DefaultResourceStore implements InitializingBean {
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-
+    public void afterPropertiesSet() {
         // 滑块验证码 模板 (系统内置)
         ResourceMap template1 = new ResourceMap("default",4);
         template1.put(

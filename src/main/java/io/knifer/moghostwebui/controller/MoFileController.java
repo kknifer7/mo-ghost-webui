@@ -173,7 +173,7 @@ public class MoFileController {
      * @param id 要替换的文件信息ID
      * @return void
      */
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ApiResult<Void> replace(MultipartFile file, @PathVariable("id") Integer id){
         service.replace(file, id);
 

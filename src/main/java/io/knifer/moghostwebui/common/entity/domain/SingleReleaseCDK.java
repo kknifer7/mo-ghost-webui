@@ -51,6 +51,13 @@ public class SingleReleaseCDK extends BaseEntity<Integer> {
     private LocalDateTime expireAt;
 
     /**
+     * 上次访问时间
+     */
+    @Column
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime lastAccessAt;
+
+    /**
      * 上次访问IP
      */
     @Column(nullable = false, length = 45)

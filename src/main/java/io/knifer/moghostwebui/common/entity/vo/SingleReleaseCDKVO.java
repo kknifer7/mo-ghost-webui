@@ -52,6 +52,12 @@ public class SingleReleaseCDKVO implements ID<Integer> {
     private Boolean expired;
 
     /**
+     * 上次访问时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastAccessAt;
+
+    /**
      * 上次访问IP
      */
     private String lastAccessIP;
@@ -90,6 +96,7 @@ public class SingleReleaseCDKVO implements ID<Integer> {
         result.setAuthWord(Strings.nullToEmpty(po.getAuthWord()));
         result.setExpireAt(expireAt);
         result.setExpired(LocalDateTime.now().isAfter(expireAt));
+        result.setLastAccessAt(po.getLastAccessAt());
         result.setLastAccessIP(po.getLastAccessIP());
         result.setLastAccessRegion(po.getLastAccessRegion());
         result.setTotalAccess(po.getTotalAccess());
