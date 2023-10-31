@@ -41,7 +41,7 @@ const moFileService = {
       timeout: 7200000,
     });
   },
-  getUploadUrl: function (versionId?: number) {
+  getUploadUrl: function (files: unknown[], versionId?: number) {
     return `${baseURL}/mo-file/${versionId ? versionId : ''}`;
   },
   getReplaceUrl: function (fileId: number) {
