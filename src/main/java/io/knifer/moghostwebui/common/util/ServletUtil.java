@@ -27,9 +27,35 @@ import java.nio.charset.StandardCharsets;
 public class ServletUtil {
 
     /**
+     * 返回文本响应
+     * @param status Http响应码
+     */
+    public static void sendResponse(HttpStatus status) {
+        sendResponse(status, status.name());
+    }
+
+    /**
+     * 返回文本响应
+     * @param status Http响应码
+     * @param content 文本内容
+     */
+    public static void sendResponse(HttpStatus status, String content) {
+        HttpServletResponse response = getResponse();
+
+        response.setStatus(status.value());
+        response.setContentType("text/plain");
+        try {
+            response.getWriter().print(content);
+        } catch (IOException e) {
+            log.error("Send response failed.", e);
+            MoException.throwOut(ErrorCodes.UNKNOWN);
+        }
+    }
+
+    /**
      * 响应文件结果
      */
-    public static void sendFileResponse(File file, @Nullable String fileName){
+    public static void sendResponse(File file, @Nullable String fileName){
         String name = fileName == null || fileName.isBlank() ? file.getName() : fileName;
         HttpServletResponse response = getResponse();
 

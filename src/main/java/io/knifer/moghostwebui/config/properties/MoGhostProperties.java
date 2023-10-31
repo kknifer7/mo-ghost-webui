@@ -3,7 +3,6 @@ package io.knifer.moghostwebui.config.properties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * MoGhost配置项
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Getter
 @Setter
-@Configuration
 @ConfigurationProperties("mo-ghost")
 public class MoGhostProperties {
 
@@ -23,7 +21,6 @@ public class MoGhostProperties {
 
     @Getter
     @Setter
-    @Configuration
     @ConfigurationProperties("mo-ghost.storage")
     public static class StorageProperties {
 
@@ -56,7 +53,6 @@ public class MoGhostProperties {
 
     @Getter
     @Setter
-    @Configuration
     @ConfigurationProperties("mo-ghost.debug")
     public static class DebugProperties {
 

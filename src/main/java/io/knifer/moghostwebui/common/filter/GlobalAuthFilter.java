@@ -6,11 +6,13 @@ import io.knifer.moghostwebui.common.constant.UtilConstants;
 import io.knifer.moghostwebui.common.exception.MoException;
 import io.knifer.moghostwebui.common.tool.security.PatternMatcher;
 import io.knifer.moghostwebui.common.tool.security.impl.CommonPathMatcher;
+import io.knifer.moghostwebui.common.util.ServletUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.Set;
@@ -54,7 +56,7 @@ public class GlobalAuthFilter implements Filter {
             resp = (HttpServletResponse) response;
             session = req.getSession(false);
             if (session == null || session.getAttribute(SecurityConstants.LOGIN_USER_SESSION_KEY) == null){
-                resp.sendError(ErrorCodes.FORBIDDEN);
+                ServletUtil.sendResponse(HttpStatus.FORBIDDEN);
             }else{
                 chain.doFilter(request, response);
             }

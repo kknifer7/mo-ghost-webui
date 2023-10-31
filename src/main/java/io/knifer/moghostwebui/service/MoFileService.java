@@ -320,7 +320,7 @@ public class MoFileService {
                             updateSingleReleaseCDK(cdk);
                             singleReleaseRepository.save(r);
                             singleReleaseCDKRepository.save(cdk);
-                            ServletUtil.sendFileResponse(moFile.toFile(), moFile.getOriginName());
+                            ServletUtil.sendResponse(moFile.toFile(), moFile.getOriginName());
                         });
                         success.set(true);
                     });
@@ -411,7 +411,7 @@ public class MoFileService {
      */
     public void downloadById(Integer id){
         repository.findById(id)
-                .ifPresent(file -> ServletUtil.sendFileResponse(file.toFile(), file.getOriginName()));
+                .ifPresent(file -> ServletUtil.sendResponse(file.toFile(), file.getOriginName()));
     }
 
     /**
