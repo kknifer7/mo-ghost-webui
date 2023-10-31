@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 public class MvcConfig {
 
     @Bean
-    @ConditionalOnProperty(name = "mo-ghost.debug.disable-auth", havingValue = "off")
+    @ConditionalOnProperty(prefix = "mo-ghost.debug", name = "disable-auth", havingValue = "false")
     public FilterRegistrationBean<GlobalAuthFilter> globalAuthFilter(){
         FilterRegistrationBean<GlobalAuthFilter> filter = new FilterRegistrationBean<>();
 

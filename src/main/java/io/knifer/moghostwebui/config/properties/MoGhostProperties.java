@@ -1,6 +1,5 @@
 package io.knifer.moghostwebui.config.properties;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,12 +13,13 @@ import org.springframework.context.annotation.Configuration;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @Configuration
 @ConfigurationProperties("mo-ghost")
 public class MoGhostProperties {
 
-    private final StorageProperties storage;
+    private StorageProperties storage;
+
+    private DebugProperties debug;
 
     @Getter
     @Setter

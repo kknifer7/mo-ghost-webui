@@ -28,7 +28,6 @@ ext {
             xz                  :       '1.9',
             guava               :       '32.0.1-jre',
             jaxb                :       '2.4.0-b180830.0359',
-            //commonsFileUpload   :       '1.5',
             ip2region           :       '2.7.0',
             tianaiCaptcha       :       '1.4.1'
     ]
@@ -42,7 +41,6 @@ dependencies {
     implementation "org.apache.commons:commons-compress:$dv.compress"
     implementation "org.tukaani:xz:$dv.xz"
     implementation "javax.xml.bind:jaxb-api:$dv.jaxb"
-    //implementation "commons-fileupload:commons-fileupload:$dv.commonsFileUpload"
     implementation "cloud.tianai.captcha:tianai-captcha-springboot-starter:$dv.tianaiCaptcha"
     implementation "org.lionsoul:ip2region:$dv.ip2region"
     runtimeOnly "org.xerial:sqlite-jdbc"
