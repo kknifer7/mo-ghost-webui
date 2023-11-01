@@ -3,7 +3,6 @@ package io.knifer.moghostwebui.service;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import io.knifer.moghostwebui.common.constant.ErrorCodes;
-import io.knifer.moghostwebui.common.constant.PeriodQueryStatus;
 import io.knifer.moghostwebui.common.entity.domain.SingleRelease;
 import io.knifer.moghostwebui.common.entity.domain.SingleReleaseCDK;
 import io.knifer.moghostwebui.common.entity.domain.SingleReleaseCDKASO;
@@ -19,15 +18,12 @@ import io.knifer.moghostwebui.repository.SingleReleaseRepository;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 单发布CDK服务
@@ -127,14 +123,7 @@ public class SingleReleaseCDKService {
      * @return data
      */
     public Page<SingleReleaseCDKVO> listPage(PageParams pageParams, SingleReleaseCDKQueryRequest request){
-        PeriodQueryStatus period = Objects.requireNonNullElse(request.getTab(), PeriodQueryStatus.ALL);
-        PageRequest pageRequest = pageParams.toPageRequest();
-        LocalDateTime now = LocalDateTime.now();
-        Page<SingleReleaseCDK> poPage = switch (period) {
-            case ALL -> repository.findAll(pageRequest);
-            case EXPIRED -> repository.findByExpireAtBefore(pageRequest, now);
-            case ACTIVATED -> repository.findByExpireAtAfter(pageRequest, now);
-        };
+        Page<SingleReleaseCDK> poPage = repository.findAll(request.toSpecification(), pageParams.toPageRequest());
         Collection<Integer> ids;
         List<Pair<Integer, SingleRelease>> releases;
         Multimap<Integer, SingleRelease> cdkIdAndReleaseMap;

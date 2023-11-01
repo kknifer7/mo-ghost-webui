@@ -13,7 +13,9 @@ public enum PeriodQueryStatus implements OrdinalEnum{
     // 有效
     ACTIVATED,
     // 过期
-    EXPIRED
+    EXPIRED,
+    // 即将过期
+    ABOUT_TO_EXPIRED
     ;
 
     @Override
