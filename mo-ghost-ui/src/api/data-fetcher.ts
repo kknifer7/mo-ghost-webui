@@ -177,7 +177,6 @@ class PagedDataFetcher<T> extends BaseDataFetcher<T> {
       page,
       rowsPerPage
     );
-
     return await this.fetchData(props.filter);
   }
 

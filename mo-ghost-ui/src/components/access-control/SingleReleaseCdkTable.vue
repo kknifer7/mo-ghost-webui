@@ -16,6 +16,39 @@
           <div class="q-table__title no-selection">
             访问控制列表（带💠为可编辑项）
           </div>
+
+          <div class="row flex center">
+            <q-select
+              outlined
+              dense
+              v-model="filterType"
+              :options="PeriodQueryStatus.values()"
+              @update:model-value="fetchData"
+            >
+              <template v-slot:selected>
+                {{ filterType.label }}
+              </template>
+            </q-select>
+
+            <q-input
+              class="col-6"
+              outlined
+              dense
+              clearable
+              v-model="filterRemark"
+              debounce="500"
+              label="备注"
+              @update:model-value="fetchData"
+            >
+              <template v-slot:prepend>
+                <q-icon
+                  @click="fetchData"
+                  class="cursor-pointer"
+                  name="search"
+                />
+              </template>
+            </q-input>
+          </div>
         </div>
       </div>
 
@@ -214,13 +247,14 @@ import { Pagination } from '@base/models';
 import { SingleReleaseCdk, columns } from './models';
 import { singleReleaseCdkService } from '@api/service';
 import GLabel from '@base/GLabel.vue';
-import { SingleReleaseCdkStatus } from '@data/dict';
+import { SingleReleaseCdkStatus, PeriodQueryStatus } from '@data/dict';
 import SingleReleaseCdkFormDialog from './SingleReleaseCdkFormDialog.vue';
 import noti from '@utils/notification';
 import TableDeleteBtn from '@base/TableDeleteBtn.vue';
 import { date } from 'quasar';
 import stringUtils from '@utils/string';
 import clipboardUtils from '@utils/clipboard';
+import { DictItem } from '@data/modules';
 
 const cdk = ref<SingleReleaseCdk>();
 const addDialog = ref();
@@ -274,18 +308,30 @@ const dataFetcher = PagedDataFetcher.of(
   loading,
   rows
 );
+const filterType = ref<DictItem>(PeriodQueryStatus.first()[1]);
+const filterRemark = ref<string>();
 
 function onResetBtnClick() {
-  onRequest({ pagination: pagination.value });
+  fetchData();
 }
 
-async function onRequest(props: { pagination: Pagination }) {
+async function onRequest(props: { pagination: Pagination; filter: unknown }) {
   await dataFetcher.onRequest(props);
+}
+
+async function fetchData() {
+  dataFetcher.onRequest({
+    pagination: pagination.value,
+    filter: {
+      tab: filterType.value.value,
+      remark: stringUtils.blankToNull(filterRemark.value),
+    },
+  });
 }
 
 onMounted(() => {
   pagination.value = Pagination.ofDefault();
-  dataFetcher.onRequest({ pagination: pagination.value, filter: null });
+  fetchData();
 });
 </script>
 

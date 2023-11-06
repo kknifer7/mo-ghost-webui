@@ -1,4 +1,10 @@
 const stringUtils = {
+  nullToEmpty: function (object?: string | null) {
+    return typeof object === 'undefined' || object === null ? '' : object;
+  },
+  blankToNull: function (object?: string | null) {
+    return this.isBlank(object) ? null : object;
+  },
   isBlank: function (object?: string | null) {
     return (
       typeof object === 'undefined' || object === null || object.length === 0

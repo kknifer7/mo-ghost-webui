@@ -80,7 +80,6 @@ export class Pagination {
     response: AxiosResponse
   ) {
     pagination.page = response.data.data.number + 1;
-    pagination.rowsPerPage = response.data.data.size;
     pagination.rowsNumber = response.data.data.totalElements;
   }
 }

@@ -1,5 +1,6 @@
 import { SingleReleaseCdk, SingleReleaseCdkAdd } from '@/access-control/models';
 import { MoFile } from '@/version/models';
+import objectUtils from '@utils/object';
 import { api } from 'src/boot/axios';
 import { baseURL } from 'src/boot/axios';
 import { SingleRelease } from 'src/components/single-release/models';
@@ -62,8 +63,11 @@ const moFileService = {
 };
 
 const singleReleaseCdkService = {
-  findList: async function (page: number, size: number) {
-    return api.get('/single-release-cdk/', buildParams(page, size));
+  findList: async function (page: number, size: number, filter?: unknown) {
+    return api.get(
+      '/single-release-cdk/',
+      buildParams(page, size, undefined, filter)
+    );
   },
   update: async function (data: SingleReleaseCdk) {
     return api.patch('/single-release-cdk/', data);
@@ -104,15 +108,30 @@ function buildParams(
   page: number,
   size: number,
   sorts?: string,
-  filter?: unknown
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  filter?: any
 ) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const params: any = {
+    page,
+    size,
+    sorts,
+  };
+  let value;
+
+  if (objectUtils.toBoolean(filter)) {
+    for (const key in filter) {
+      if (
+        Object.hasOwnProperty.call(filter, key) &&
+        objectUtils.toBoolean((value = filter[key]))
+      ) {
+        params[key] = value;
+      }
+    }
+  }
+
   return {
-    params: {
-      page,
-      size,
-      sorts,
-      filter,
-    },
+    params,
   };
 }
 
