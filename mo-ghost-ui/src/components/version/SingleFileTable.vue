@@ -65,8 +65,10 @@
                   <span><q-icon name="autorenew" />&nbsp;替换</span>
                 </q-item-seciton>
                 <q-dialog ref="replaceDialog">
-                  <file-replace-dialog
+                  <file-upload-dialog
                     :file-id="props.row.id"
+                    title="文件替换"
+                    :businessType="BusinessType.SingleReleaseFileReplace"
                     @finish="onFileReplaced"
                   />
                 </q-dialog>
@@ -81,6 +83,39 @@
 
         <q-td key="size" :props="props">
           {{ props.row.size }}
+        </q-td>
+
+        <q-td key="state" :props="props">
+          <q-icon
+            v-if="props.row.state === MoFileState.MergeFailed"
+            name="highlight_off"
+            color="negative"
+            size="20px"
+          >
+            <q-tooltip class="bg-grey-2 text-body1 text-negetive">
+              <q-item-label> 合并失败 </q-item-label>
+            </q-tooltip>
+          </q-icon>
+          <q-icon
+            v-if="props.row.state === MoFileState.Normal"
+            name="check_circle_outline"
+            color="positive"
+            size="20px"
+          >
+            <q-tooltip class="bg-grey-2 text-body1 text-positive">
+              <q-item-label> 正常 </q-item-label>
+            </q-tooltip>
+          </q-icon>
+          <q-circular-progress
+            v-if="props.row.state === MoFileState.Merging"
+            indeterminate
+            size="20px"
+            color="warning"
+          >
+            <q-tooltip class="bg-grey-2 text-body1 text-warning">
+              <q-item-label> 合并中 </q-item-label>
+            </q-tooltip>
+          </q-circular-progress>
         </q-td>
 
         <q-td key="remark" :props="props">
@@ -132,16 +167,22 @@
 
 <script setup lang="ts">
 import { PagedDataFetcher } from '@api/data-fetcher';
-import { nextTick, onMounted, ref } from 'vue';
-import { Pagination } from '@base/models';
-import { MoFile, columns } from './models';
+import { inject, nextTick, onMounted, ref } from 'vue';
+import { GlobalEvents, Pagination } from '@base/models';
+import { MoFile, columns, MoFileState } from './models';
 import { moFileService } from '@api/service';
 import TableDeleteBtn from '@base/TableDeleteBtn.vue';
 import GLabel from '@base/GLabel.vue';
 import FileAddForm from '@/version/FileAddForm.vue';
-import FileReplaceDialog from '@/version/FileReplaceDialog.vue';
+import FileUploadDialog from '@/version/FileUploadDialog.vue';
 import fileUtils from '@utils/file';
 import stringUtils from '@utils/string';
+import { EventBus } from 'quasar';
+import { BusinessType } from '@/upload/models';
+
+const bus = inject('bus') as EventBus;
+
+bus.on(GlobalEvents.FinishUploadTask, onFileAddFinish);
 
 function onFileAddFinish() {
   dataFetcher.onDataChanged();
@@ -185,7 +226,7 @@ async function onRowSave(row: MoFile) {
   dataFetcher.dataUpdate(moFileService.updateRemark, row);
 }
 
-const rows = ref<Array<MoFile>>();
+const rows = ref<Array<MoFile>>([]);
 const loading = ref(false);
 const pagination = ref();
 const dataFetcher = PagedDataFetcher.of(

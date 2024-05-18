@@ -18,6 +18,11 @@ const routes: RouteRecordRaw[] = [
         path: '/version/single-list',
         component: () => import('pages/VersionSinglePage.vue'),
       },
+      // TODO 发布文件，待开发
+      // {
+      //   path: '/version/list',
+      //   component: () => import('pages/VersionListPage.vue'),
+      // },
       {
         path: '/access-control/cdk-list',
         component: () => import('pages/AccessControlPage.vue'),
@@ -26,6 +31,11 @@ const routes: RouteRecordRaw[] = [
         path: '/security',
         component: () => import('pages/SecurityPage.vue'),
       },
+      // TODO 测试页面
+      // {
+      //   path: '/test',
+      //   component: () => import('pages/TestPage.vue'),
+      // },
     ],
     beforeEnter: function () {
       return Cookies.get('login') === '1' ? true : '/login';

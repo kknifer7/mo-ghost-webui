@@ -18,6 +18,12 @@ public interface TransactionExecutor {
 
     /**
      * 在事务中执行回调函数
+     * @param runnable 回调函数
+     */
+    void execute(Runnable runnable);
+
+    /**
+     * 在事务中执行回调函数
      *
      * @param callable 回调函数
      */

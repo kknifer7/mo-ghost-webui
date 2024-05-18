@@ -66,6 +66,12 @@ public class SingleReleaseVO implements ID<Integer> {
     private String remark;
 
     /**
+     * 排序值
+     */
+    private Integer sortOrder;
+
+
+    /**
      * 创建日期
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -94,6 +100,7 @@ public class SingleReleaseVO implements ID<Integer> {
         result.setRemark(po.getRemark());
         result.setCtime(po.getCtime());
         result.setMtime(po.getMtime());
+        result.setSortOrder(po.getSortOrder());
 
         return result;
     }

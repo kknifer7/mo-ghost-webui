@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 /**
  * - 加密、解密、摘要等操作工具类 -
@@ -37,6 +38,17 @@ public final class CodecUtil {
 
     private CodecUtil(){
         throw new AssertionError();
+    }
+
+    public static byte[] base64(@Nonnull String content) {
+        Base64.Decoder decoder;
+
+        if (content.isEmpty()){
+            return new byte[0];
+        }
+        decoder = Base64.getDecoder();
+
+        return decoder.decode(content);
     }
 
     public static byte[] sha256(@Nonnull String message){

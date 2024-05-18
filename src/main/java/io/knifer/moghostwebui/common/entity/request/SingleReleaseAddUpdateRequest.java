@@ -45,4 +45,9 @@ public class SingleReleaseAddUpdateRequest {
      */
     @Length(max = 64)
     private String remark;
+
+    /**
+     * 排序值
+     */
+    private Integer sortOrder;
 }

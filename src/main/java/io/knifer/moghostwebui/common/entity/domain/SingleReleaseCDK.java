@@ -2,6 +2,7 @@ package io.knifer.moghostwebui.common.entity.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.base.Strings;
+import io.knifer.moghostwebui.common.constant.MoConstants;
 import io.knifer.moghostwebui.common.constant.SingleReleaseCDKStatus;
 import io.knifer.moghostwebui.common.entity.request.SingleReleaseCDKAddUpdateRequest;
 import io.knifer.moghostwebui.common.util.RandomUtil;
@@ -92,6 +93,13 @@ public class SingleReleaseCDK extends BaseEntity<Integer> {
     @ColumnDefault("''")
     private String remark;
 
+    /**
+     * 排序值
+     */
+    @Column(nullable = false)
+    @ColumnDefault("999")
+    private Integer sortOrder;
+
     public static SingleReleaseCDK from(SingleReleaseCDKAddUpdateRequest request){
         SingleReleaseCDK result = new SingleReleaseCDK();
 
@@ -102,6 +110,7 @@ public class SingleReleaseCDK extends BaseEntity<Integer> {
         result.setExpireAt(request.getExpireAt());
         result.setCdkStatus(request.getCdkStatus());
         result.setRemark(Strings.nullToEmpty(request.getRemark()));
+        result.setSortOrder(MoConstants.DEFAULT_SORT_ORDER);
 
         return result;
     }
@@ -111,5 +120,9 @@ public class SingleReleaseCDK extends BaseEntity<Integer> {
         target.setExpireAt(source.getExpireAt());
         target.setCdkStatus(source.getCdkStatus());
         target.setRemark(Strings.nullToEmpty(source.getRemark()));
+        target.setSortOrder(source.getSortOrder());
+        if (target.getSortOrder() == null) {
+            target.setSortOrder(MoConstants.DEFAULT_SORT_ORDER);
+        }
     }
 }

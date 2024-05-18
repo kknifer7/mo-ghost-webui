@@ -28,7 +28,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['axios', 'particles'],
+    boot: ['axios', 'particles', 'bus'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -58,6 +58,7 @@ module.exports = configure(function (/* ctx */) {
         '@img': path.resolve(__dirname, './src/assets/img'),
         '@base': path.resolve(__dirname, './src/components/base'),
         '@utils': path.resolve(__dirname, './src/utils'),
+        '@tools': path.resolve(__dirname, './src/tools'),
         '@api': path.resolve(__dirname, './src/api'),
         '@data': path.resolve(__dirname, './src/data'),
         '@': path.resolve(__dirname, './src/components'),
@@ -79,7 +80,7 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      // extendViteConf(viteConf) {},
       // viteVuePluginOptions: {},
 
       // vitePlugins: [
@@ -116,7 +117,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify', 'Loading'],
+      plugins: ['Notify', 'Loading', 'Dialog'],
     },
 
     // animations: 'all', // --- includes all animations

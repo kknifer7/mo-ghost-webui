@@ -11,12 +11,14 @@ import io.knifer.moghostwebui.common.entity.domain.SettingEntry;
 import io.knifer.moghostwebui.common.entity.request.LoginRequest;
 import io.knifer.moghostwebui.common.entity.request.UpdateAccountRequest;
 import io.knifer.moghostwebui.common.exception.MoException;
+import io.knifer.moghostwebui.common.util.RandomUtil;
 import io.knifer.moghostwebui.common.util.ServletUtil;
 import io.knifer.moghostwebui.repository.SettingEntryRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
@@ -74,7 +76,6 @@ public class SecurityService {
                 result
         );
         ServletUtil.setResponseHeader(SecurityConstants.RSP_HEADER_NO_NEED_RESOLVE, MoConstants.YES_STR);
-
 
         return valid;
     }
@@ -152,8 +153,55 @@ public class SecurityService {
         }
     }
 
+    /**
+     * 生成访问密钥
+     * @return 生成的访问密钥
+     */
+    @Transactional
+    public String genAccessKey() {
+        SettingEntry setting = settingEntryRepository.findByKey(SettingConstants.SYS_SEC_ACCESS_KEY_ENTRY_KEY)
+                .orElseGet(() -> SettingEntry.of(
+                        SettingConstants.SYS_SEC_ACCESS_KEY_ENTRY_KEY,
+                        DataType.STRING,
+                        StringUtils.EMPTY,
+                        SettingConstants.SYS_SEC_TAG_NAME
+                ));
+
+        setting.setValue(RandomUtil.nextUUID(true));
+        settingEntryRepository.save(setting);
+
+        return setting.getValue();
+    }
+
+    /**
+     * 移除访问密钥
+     */
+    public void deleteAccessKey() {
+        settingEntryRepository.findByKey(SettingConstants.SYS_SEC_ACCESS_KEY_ENTRY_KEY)
+                .ifPresent(setting -> {
+                    setting.setValue(StringUtils.EMPTY);
+                    settingEntryRepository.save(setting);
+                });
+    }
+
+    /**
+     * 获取配置项，如果获取不到，抛出异常
+     * @param key 配置项key
+     * @return 配置项
+     */
     private SettingEntry getEntryOrThrowExp(String key){
         return settingEntryRepository.findByKey(key)
                 .orElseThrow(UtilConstants.NULL_OBJ_SUPPLIER);
+    }
+
+    /**
+     * 查询是否已有访问密钥
+     * @return bool
+     */
+    public boolean hasAccessKey() {
+        SettingEntry setting =
+                settingEntryRepository.findByKey(SettingConstants.SYS_SEC_ACCESS_KEY_ENTRY_KEY).orElse(null);
+
+        return setting != null && StringUtils.isNotBlank(setting.getValue());
     }
 }

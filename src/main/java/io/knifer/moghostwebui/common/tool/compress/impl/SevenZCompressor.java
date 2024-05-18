@@ -7,6 +7,7 @@ import io.knifer.moghostwebui.common.exception.MoException;
 import io.knifer.moghostwebui.common.tool.compress.Compressor;
 import io.knifer.moghostwebui.common.tool.security.PathChecker;
 import io.micrometer.common.util.StringUtils;
+import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 /**
- * 7z解压缩
+ * 7z压缩
  *
  * @author Knifer
  * @version 1.0.0
@@ -31,7 +32,7 @@ public class SevenZCompressor implements Compressor {
 
     @Override
     @SuppressWarnings("all")
-    public void compress(String inputPath, String outputPath) {
+    public void compress(@Nonnull String inputPath, @Nonnull String outputPath) {
         File parentDir, output;
         long now;
 

@@ -1,13 +1,14 @@
 import { SingleReleaseCdk, SingleReleaseCdkAdd } from '@/access-control/models';
 import { MoFile } from '@/version/models';
+import { UploadSharding } from '@base/models';
 import objectUtils from '@utils/object';
 import { api } from 'src/boot/axios';
 import { baseURL } from 'src/boot/axios';
 import { SingleRelease } from 'src/components/single-release/models';
 
 const singleReleaseService = {
-  findList: async function (page: number, size: number) {
-    return api.get('/single-release/', buildParams(page, size));
+  findList: async function (page: number, size: number, filter?: unknown) {
+    return api.get('/single-release/', buildParams(page, size, filter));
   },
   findListByCdkId: async function (cdkId: number) {
     return api.get(`/single-release-cdk-aso/${cdkId}`);
@@ -60,14 +61,35 @@ const moFileService = {
   replace: async function (id: number) {
     return api.patch(`/mo-file/${id}`);
   },
+  create: async function (shardingId: number) {
+    return api.post(`/mo-file/${shardingId}`);
+  },
+};
+
+const uploadService = {
+  getMissingParts: async function (fileKey: string) {
+    return api.get(`/upload/missing-parts/${fileKey}`);
+  },
+  upload: async function (shard: UploadSharding) {
+    return api.post('/upload/', shard);
+  },
+  delete: async function (id: number) {
+    return api.delete(`/upload/${id}`);
+  },
+  deleteByFileKey: async function (fileKey: string) {
+    return api.delete(`/upload/file-key/${fileKey}`);
+  },
+  deleteAllDone: async function () {
+    return api.delete('/upload/all-done');
+  },
+  getAll: async function () {
+    return api.get('/upload/');
+  },
 };
 
 const singleReleaseCdkService = {
   findList: async function (page: number, size: number, filter?: unknown) {
-    return api.get(
-      '/single-release-cdk/',
-      buildParams(page, size, undefined, filter)
-    );
+    return api.get('/single-release-cdk/', buildParams(page, size, filter));
   },
   update: async function (data: SingleReleaseCdk) {
     return api.patch('/single-release-cdk/', data);
@@ -102,12 +124,20 @@ const securityService = {
   logout: async function () {
     return api.delete('/auth/');
   },
+  getHasAccessKey: async function () {
+    return api.get('/settings/access-key');
+  },
+  genAccessKey: async function () {
+    return api.post('/settings/access-key');
+  },
+  deleteAccessKey: async function () {
+    return api.delete('/settings/access-key');
+  },
 };
 
 function buildParams(
   page: number,
   size: number,
-  sorts?: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any
 ) {
@@ -115,7 +145,6 @@ function buildParams(
   const params: any = {
     page,
     size,
-    sorts,
   };
   let value;
 
@@ -138,6 +167,7 @@ function buildParams(
 export {
   singleReleaseService,
   moFileService,
+  uploadService,
   singleReleaseCdkService,
   securityService,
 };

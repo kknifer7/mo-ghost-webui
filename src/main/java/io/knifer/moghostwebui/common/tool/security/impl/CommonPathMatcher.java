@@ -23,24 +23,15 @@ public class CommonPathMatcher implements PatternMatcher {
             int start;
             if (pattern.endsWith("*")) {
                 start = pattern.length() - 1;
-                if (source.length() >= start && pattern.substring(0, start).equals(source.substring(0, start))) {
-                    return true;
-                }
+                return source.length() >= start && pattern.substring(0, start).equals(source.substring(0, start));
             } else if (pattern.startsWith("*")) {
                 start = pattern.length() - 1;
-                if (source.length() >= start && source.endsWith(pattern.substring(1))) {
-                    return true;
-                }
+                return source.length() >= start && source.endsWith(pattern.substring(1));
             } else if (pattern.contains("*")) {
                 start = pattern.indexOf("*");
                 int end = pattern.lastIndexOf("*");
-                if (source.startsWith(pattern.substring(0, start)) && source.endsWith(pattern.substring(end + 1))) {
-                    return true;
-                }
-            } else if (pattern.equals(source)) {
-                return true;
-            }
-            return false;
+                return source.startsWith(pattern.substring(0, start)) && source.endsWith(pattern.substring(end + 1));
+            } else return pattern.equals(source);
         } else {
             return false;
         }

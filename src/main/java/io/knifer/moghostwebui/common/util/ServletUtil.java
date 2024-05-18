@@ -167,8 +167,11 @@ public class ServletUtil {
      * 获取session
      * @return
      */
+    @Nullable
     public static HttpSession getSession(){
-        return getRequest().getSession(false);
+        HttpServletRequest request = getRequest();
+
+        return request == null ? null : request.getSession(false);
     }
 
     /**
@@ -228,10 +231,11 @@ public class ServletUtil {
      * @param name
      * @return
      */
+    @Nullable
     public static Object getSessionAttribute(String name){
-        HttpServletRequest request = getRequest();
+        HttpSession session = getSession();
 
-        return request == null ? null : request.getSession().getAttribute(name);
+        return session == null ? null : session.getAttribute(name);
     }
 
     /**

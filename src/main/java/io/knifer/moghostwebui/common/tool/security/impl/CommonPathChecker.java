@@ -18,11 +18,6 @@ import java.io.File;
 public class CommonPathChecker implements PathChecker {
 
     @Override
-    public void validate(String path) {
-        validate(path, false);
-    }
-
-    @Override
     public void validate(String path, boolean allowBlank) {
         if (!check(path, allowBlank)){
             MoException.throwOut(ErrorCodes.SECURITY_CHECK_FAILED, "File name check failed.");

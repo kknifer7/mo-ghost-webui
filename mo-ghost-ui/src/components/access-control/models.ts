@@ -10,6 +10,7 @@ export interface SingleReleaseCdk {
   totalAccess: number;
   cdkStatus: string;
   remark: string;
+  sortOrder: number;
   singleReleases: SingleRelease[];
   srIds?: number[]; // 用于更新
 }
@@ -80,6 +81,12 @@ export const columns = [
     name: 'totalAccess',
     label: '总访问量',
     field: 'totalAccess',
+    align: 'center',
+  },
+  {
+    name: 'sortOrder',
+    label: '排序值💠',
+    field: 'sortOrder',
     align: 'center',
   },
   {

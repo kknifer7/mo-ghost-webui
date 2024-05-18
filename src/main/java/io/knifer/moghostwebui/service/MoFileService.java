@@ -16,9 +16,12 @@ import io.knifer.moghostwebui.common.tool.security.IPLocator;
 import io.knifer.moghostwebui.common.util.RandomUtil;
 import io.knifer.moghostwebui.common.util.ServletUtil;
 import io.knifer.moghostwebui.config.properties.MoGhostProperties;
+import io.knifer.moghostwebui.handle.security.impl.AccessKeyVerifier;
 import io.knifer.moghostwebui.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -43,7 +46,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Knifer
  * @version 1.0.0
  */
+@Slf4j
 @Service
+@DependsOn("asyncServiceExecutor")
 public class MoFileService {
 
     private final MoFileRepository repository;
@@ -62,6 +67,8 @@ public class MoFileService {
 
     private final IPLocator ipLocator;
 
+    private final AccessKeyVerifier accessKeyVerifier;
+
     private final String STORAGE_PATH;
 
     @Autowired
@@ -74,6 +81,7 @@ public class MoFileService {
             SingleReleaseCDKASORepository singleReleaseCDKASORepository,
             FileAssessor fileAssessor,
             IPLocator ipLocator,
+            AccessKeyVerifier accessKeyVerifier,
             MoGhostProperties.StorageProperties props
     ){
         this.repository = repository;
@@ -84,7 +92,8 @@ public class MoFileService {
         this.singleReleaseCDKASORepository = singleReleaseCDKASORepository;
         this.fileAssessor = fileAssessor;
         this.ipLocator = ipLocator;
-        this.STORAGE_PATH = props.getSavePath();
+        this.accessKeyVerifier = accessKeyVerifier;
+        this.STORAGE_PATH = StringUtils.appendIfMissing(props.getSavePath(), "/");
     }
 
     /**
@@ -156,6 +165,7 @@ public class MoFileService {
      * @param files 文件列表
      * @author Xinyp
      */
+    @Deprecated
     @Transactional
     public void add(MultipartFile[] files, @Nullable Integer versionId){
         // 文件是否独立于版本
@@ -177,6 +187,7 @@ public class MoFileService {
      * @param files 文件列表
      * @return MoFile文件列表
      */
+    @Deprecated
     @SuppressWarnings("all")
     private List<MoFile> saveFiles(MultipartFile[] files, @Nullable Integer versionId){
         File storageFile;
@@ -508,5 +519,21 @@ public class MoFileService {
                     // 准备插入数据库的文件信息
                     repository.save(moFile);
                 });
+    }
+
+    /**
+     * 根据访问Key下载
+     * @param accessKey 访问key
+     * @param id 文件信息ID
+     */
+    public void downloadByAccessKey(String accessKey, Integer id) {
+        if (!accessKeyVerifier.verify(accessKey)) {
+            MoException.throwOut(
+                    ErrorCodes.FORBIDDEN,
+                    "Unable to download file, accessKey: " + accessKey + ", fileId: " + id
+            );
+        }
+        repository.findById(id)
+                .ifPresent(file -> ServletUtil.sendResponse(file.toFile(), file.getOriginName()));
     }
 }

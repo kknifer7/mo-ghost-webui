@@ -34,6 +34,14 @@ mo-ghost:
     tmp-path: E:/Study/dev/Java/mo-ghost-webui/data/tmp
   debug:
     disable-auth: on
+  task-executor:
+    core-pool-size: 2
+    max-pool-size: 2
+    queue-capacity: 5000
+    keep-alive-seconds: 60
+    allow-core-thread-timeout: off
+    pre-start-all-core-threads: off
+    thread-name-prefix: mo-ghost-task-executor-
 server:
   port: 9936
 # tianai captcha

@@ -83,6 +83,11 @@ public class SingleReleaseCDKVO implements ID<Integer> {
     private String remark;
 
     /**
+     * 排序值
+     */
+    private Integer sortOrder;
+
+    /**
      * 发布对象ID
      */
     private Collection<SingleReleaseVO> singleReleases;
@@ -102,6 +107,7 @@ public class SingleReleaseCDKVO implements ID<Integer> {
         result.setTotalAccess(po.getTotalAccess());
         result.setCdkStatus(po.getCdkStatus());
         result.setRemark(po.getRemark());
+        result.setSortOrder(po.getSortOrder());
         result.setSingleReleases(List.of());
 
         return result;

@@ -2,6 +2,7 @@ package io.knifer.moghostwebui.common.entity.request;
 
 import io.knifer.moghostwebui.common.constant.UtilConstants;
 import io.knifer.moghostwebui.common.entity.domain.MoFile;
+import io.knifer.moghostwebui.common.entity.domain.MoFile_;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -32,9 +33,9 @@ public class MoFileQueryRequest implements QueryRequest<MoFile>{
     @Override
     public Example<MoFile> toExample() {
         ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("originName", UtilConstants.EXP_STR_MATCHER)
-                .withMatcher("path", UtilConstants.EXP_STR_MATCHER)
-                .withMatcher("remark", UtilConstants.EXP_STR_MATCHER);
+                .withMatcher(MoFile_.ORIGIN_NAME, UtilConstants.EXP_STR_MATCHER)
+                .withMatcher(MoFile_.PATH, UtilConstants.EXP_STR_MATCHER)
+                .withMatcher(MoFile_.REMARK, UtilConstants.EXP_STR_MATCHER);
         MoFile probe = MoFile.builder()
                 .originName(originName)
                 .path(path)

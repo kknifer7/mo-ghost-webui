@@ -45,6 +45,18 @@ public class TransactionExecutorImpl implements TransactionExecutor {
     }
 
     @Override
+    public void execute(Runnable runnable) {
+        try {
+            begin();
+            runnable.run();
+            commit();
+        } catch (Exception e) {
+            rollback();
+            throw new MoException(ErrorCodes.UNKNOWN, e);
+        }
+    }
+
+    @Override
     public <V> V execute(Callable<V> callable) {
         try {
             begin();

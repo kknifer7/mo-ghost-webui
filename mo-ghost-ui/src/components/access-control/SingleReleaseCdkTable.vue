@@ -216,6 +216,18 @@
           {{ props.row.totalAccess }}
         </q-td>
 
+        <q-td key="sortOrder" :props="props">
+          {{ props.row.sortOrder }}
+          <q-popup-edit
+            auto-save
+            @save="onRowSave(props.row)"
+            v-model="props.row.sortOrder"
+            v-slot="scope"
+          >
+            <q-input type="number" v-model="scope.value" dense autofocus />
+          </q-popup-edit>
+        </q-td>
+
         <q-td key="option" :props="props" class="q-gutter-xs">
           <q-btn
             @click="onManageBtnClick(props.row)"
@@ -285,6 +297,7 @@ async function onAddBtnClick() {
     remark: '新建访问控制',
   });
   addBtnLoading.value = false;
+  onResetBtnClick();
 }
 
 async function onDeleteConfirm(id: number) {
@@ -296,10 +309,14 @@ async function onDeleteConfirm(id: number) {
 async function onRowSave(row: SingleReleaseCdk) {
   await nextTick();
   row.srIds = row.singleReleases.map((sr) => sr.id);
-  dataFetcher.dataUpdate(singleReleaseCdkService.update, row);
+  dataFetcher.dataUpdate(singleReleaseCdkService.update, row, true, {
+    tab: filterType.value.value,
+    remark: stringUtils.blankToNull(filterRemark.value),
+    sorts: 'sortOrder,asc',
+  });
 }
 
-const rows = ref<Array<SingleReleaseCdk>>();
+const rows = ref<Array<SingleReleaseCdk>>([]);
 const loading = ref(false);
 const pagination = ref();
 const dataFetcher = PagedDataFetcher.of(
@@ -312,21 +329,44 @@ const filterType = ref<DictItem>(PeriodQueryStatus.first()[1]);
 const filterRemark = ref<string>();
 
 function onResetBtnClick() {
+  resetParams();
   fetchData();
 }
 
-async function onRequest(props: { pagination: Pagination; filter: unknown }) {
-  await dataFetcher.onRequest(props);
+function resetParams() {
+  filterType.value = PeriodQueryStatus.first()[1];
+  filterRemark.value = '';
+}
+
+async function onRequest(props: { pagination: Pagination }) {
+  dataFetcher.onRequest({
+    pagination: props.pagination,
+    filter: {
+      type: filterType.value.value,
+      remark: stringUtils.blankToNull(filterRemark.value),
+      sorts: 'sortOrder,asc',
+    },
+  });
+  // await dataFetcher.onRequest({
+  //   pagination: pagination.value,
+  //   filter: {
+  //     type: filterType.value.value,
+  //     remark: stringUtils.blankToNull(filterRemark.value),
+  //     sorts: 'sortOrder,asc',
+  //   },
+  // });
 }
 
 async function fetchData() {
-  dataFetcher.onRequest({
+  const props = {
     pagination: pagination.value,
     filter: {
       tab: filterType.value.value,
       remark: stringUtils.blankToNull(filterRemark.value),
+      sorts: 'sortOrder,asc',
     },
-  });
+  };
+  dataFetcher.onRequest(props);
 }
 
 onMounted(() => {

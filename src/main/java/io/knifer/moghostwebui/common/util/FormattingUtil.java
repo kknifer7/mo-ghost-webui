@@ -1,7 +1,7 @@
 package io.knifer.moghostwebui.common.util;
 
 /**
- * 文件工具类
+ * 格式化工具类
  * @link <a href="https://blog.csdn.net/keplerpig/article/details/78094028">来源</a>
  *
  * @author Knifer
@@ -57,7 +57,7 @@ public final class FormattingUtil {
         if (size <= 0) {
             return String.format(format, val, unit);
         }
-        long T = B;
+        long T;
         if (size < MB) {
             // KB范围
             T = KB;

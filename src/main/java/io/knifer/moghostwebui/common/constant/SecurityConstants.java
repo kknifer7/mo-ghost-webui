@@ -35,5 +35,6 @@ public final class SecurityConstants {
     // 全局认证过滤器排除路径初始化参数名称
     public final static String GLOBAL_AUTH_FILTER_EXCLUDE_URIS_INIT_PARAM_NAME = "exclude-uris";
     // 全局认证过滤器排除路径
-    public final static String GLOBAL_AUTH_FILTER_EXCLUDE_URIS = "/auth/*,/security/gen,/security/check,/mo-file/single-release/*";
+    public final static String GLOBAL_AUTH_FILTER_EXCLUDE_URIS =
+            "/auth/*,/security/gen,/security/check,/mo-file/single-release/*,/mo-file/access-key/*";
 }

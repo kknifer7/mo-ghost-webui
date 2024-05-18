@@ -2,6 +2,7 @@ package io.knifer.moghostwebui.common.tool.file;
 
 import io.knifer.moghostwebui.common.entity.domain.MoFile;
 import io.knifer.moghostwebui.common.entity.domain.Package;
+import io.knifer.moghostwebui.common.entity.domain.UploadSharding;
 
 import java.io.File;
 import java.util.Collection;
@@ -46,5 +47,40 @@ public interface FileAssessor {
      * @param outputPath 输出路径
      */
     void compress(String inputPath, String outputPath);
+
+    /**
+     * 解压文件
+     * @param inputPath 输入路径
+     * @param outputPath 输出路径
+     */
+    void decompress(String inputPath, String outputPath);
+
+    /**
+     * 保存数据
+     * @param bytes 数据内容
+     * @param savePath 保存位置（一般为临时目录）
+     */
+    void saveBytes(byte[] bytes, String savePath);
+
+    /**
+     * 合并文件分片。如果无需合并，则不做任何操作
+     * @param sharding 分片信息对象
+     * @param savePath 最终文件保存位置
+     * @return 合并完成/未完成
+     */
+    boolean mergeShard(UploadSharding sharding, String savePath);
+
+    /**
+     * 查询缺失的分片
+     * @param sharding 分片信息对象
+     * @return 缺失的分片
+     */
+    List<Integer> findMissingShards(UploadSharding sharding);
+
+    /**
+     * 根据分片信息删除文件
+     * @param sharding 分片信息对象
+     */
+    void deleteFile(UploadSharding sharding);
 
 }

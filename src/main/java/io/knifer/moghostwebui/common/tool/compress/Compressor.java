@@ -3,7 +3,7 @@ package io.knifer.moghostwebui.common.tool.compress;
 import jakarta.annotation.Nonnull;
 
 /**
- * 解压缩
+ * 压缩
  *
  * @author Knifer
  * @version 1.0.0

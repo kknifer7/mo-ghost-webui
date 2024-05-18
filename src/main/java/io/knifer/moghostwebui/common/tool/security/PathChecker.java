@@ -8,7 +8,9 @@ package io.knifer.moghostwebui.common.tool.security;
  */
 public interface PathChecker {
 
-    void validate(String path);
+    default void validate(String path) {
+        validate(path, false);
+    }
 
     void validate(String path, boolean allowBlank);
 

@@ -1,6 +1,7 @@
 package io.knifer.moghostwebui.common.entity.domain;
 
 import com.google.common.base.Strings;
+import io.knifer.moghostwebui.common.constant.MoConstants;
 import io.knifer.moghostwebui.common.constant.SingleReleaseStatus;
 import io.knifer.moghostwebui.common.entity.request.SingleReleaseAddUpdateRequest;
 import jakarta.persistence.Column;
@@ -60,6 +61,13 @@ public class SingleRelease extends BaseEntity<Integer>{
     @ColumnDefault("''")
     private String remark;
 
+    /**
+     * 排序值
+     */
+    @Column(nullable = false)
+    @ColumnDefault("999")
+    private Integer sortOrder;
+
     public static SingleRelease from(SingleReleaseAddUpdateRequest request){
         SingleRelease result = new SingleRelease();
 
@@ -74,5 +82,9 @@ public class SingleRelease extends BaseEntity<Integer>{
         target.setFileId(source.getFileId());
         target.setReleaseStatus(source.getReleaseStatus());
         target.setRemark(Strings.nullToEmpty(source.getRemark()));
+        target.setSortOrder(source.getSortOrder());
+        if (target.getSortOrder() == null) {
+            target.setSortOrder(MoConstants.DEFAULT_SORT_ORDER);
+        }
     }
 }

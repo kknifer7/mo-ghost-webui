@@ -16,6 +16,8 @@ const baseURL = 'http://localhost:9100/api';
 //const baseURL = 'http://218.62.100.7:8002/backend';
 // prod 域名
 // const baseURL = 'https://smg.knifer.fun:8002/backend';
+// frp prod 域名
+// const baseURL = 'https://smg.knifer.fun/backend';
 const api = axios.create({ baseURL });
 
 api.defaults.headers.post['Content-Type'] = 'application/json';

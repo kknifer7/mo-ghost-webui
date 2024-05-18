@@ -11,7 +11,6 @@ const createHistory = process.env.SERVER
   : process.env.VUE_ROUTER_MODE === 'history'
   ? createWebHistory
   : createWebHashHistory;
-
 const Router = createRouter({
   scrollBehavior: () => ({ left: 0, top: 0 }),
   routes,

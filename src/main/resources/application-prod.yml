@@ -32,6 +32,14 @@ mo-ghost:
   storage:
     save-path: /home/xinhr/server/var/mo-ghost/data
     tmp-path: /home/xinhr/server/tmp/mo-ghost
+  task-executor:
+    core-pool-size: 2
+    max-pool-size: 2
+    queue-capacity: 5000
+    keep-alive-seconds: 60
+    allow-core-thread-timeout: off
+    pre-start-all-core-threads: off
+    thread-name-prefix: mo-ghost-task-executor-
 server:
   port: 9936
 # tianai captcha

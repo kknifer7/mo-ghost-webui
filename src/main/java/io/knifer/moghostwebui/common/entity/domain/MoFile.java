@@ -1,6 +1,7 @@
 package io.knifer.moghostwebui.common.entity.domain;
 
 import io.knifer.moghostwebui.common.constant.ErrorCodes;
+import io.knifer.moghostwebui.common.constant.MoFileState;
 import io.knifer.moghostwebui.common.exception.MoException;
 import io.knifer.moghostwebui.common.util.CodecUtil;
 import jakarta.persistence.Column;
@@ -8,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,6 +67,13 @@ public class MoFile extends BaseEntity<Integer>{
     private String hashValue;
 
     /**
+     * 文件状态
+     */
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private MoFileState state;
+
+    /**
      * 备注
      */
     @Column(nullable = false, length = 64)
@@ -78,15 +87,14 @@ public class MoFile extends BaseEntity<Integer>{
     public void refresh(){
         File file = toFile();
 
-        if (!file.exists() || !file.isFile()){
+        if (!file.exists() || !file.isFile()) {
             return;
         }
         this.saveName = file.getName();
         this.size = file.length();
         try {
             this.setHashValue(CodecUtil.sha256String(file));
-        } catch (IOException
-                e) {
+        } catch (IOException e) {
             MoException.throwOut(ErrorCodes.UNKNOWN, e);
         }
     }
@@ -97,6 +105,7 @@ public class MoFile extends BaseEntity<Integer>{
         result.setOriginName(originFile.getOriginalFilename());
         result.setPath(file.getAbsolutePath());
         result.refresh();
+        result.setState(MoFileState.NORMAL);
         result.setRemark(Strings.EMPTY);
 
         return result;
@@ -110,7 +119,23 @@ public class MoFile extends BaseEntity<Integer>{
         result.setPath(newPath.toAbsolutePath().toString());
         result.setSize(oldFile.getSize());
         result.setHashValue(oldFile.getHashValue());
+        result.setState(oldFile.getState());
         result.setRemark(oldFile.getRemark());
+
+        return result;
+    }
+
+    public static MoFile of(UploadSharding sharding, String savePath) {
+        MoFile result = new MoFile();
+
+        result.setOriginName(sharding.getFileName());
+        result.setSaveName("");
+        result.setPath(savePath);
+        result.setSize(0L);
+        result.setHashValue("");
+        result.setState(MoFileState.MERGING);
+        result.setRemark(StringUtils.EMPTY);
+        result.refresh();
 
         return result;
     }

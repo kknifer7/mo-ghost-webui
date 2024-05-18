@@ -10,6 +10,7 @@ import io.knifer.moghostwebui.repository.SettingEntryRepository;
 import io.knifer.moghostwebui.repository.SettingTagRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
@@ -88,6 +89,12 @@ public class SettingInitializer implements InitializingBean {
                 SettingConstants.SYS_SEC_PASSWORD_ENTRY_KEY,
                 DataType.STRING,
                 SecurityConstants.DEFAULT_PASSWORD,
+                SettingConstants.SYS_SEC_TAG_NAME
+        ));
+        settingEntryRepository.save(SettingEntry.of(
+                SettingConstants.SYS_SEC_ACCESS_KEY_ENTRY_KEY,
+                DataType.STRING,
+                StringUtils.EMPTY,
                 SettingConstants.SYS_SEC_TAG_NAME
         ));
         log.info("System initialized.");

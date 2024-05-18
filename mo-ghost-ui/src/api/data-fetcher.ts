@@ -10,16 +10,17 @@ interface DataFetcher {
   /**
    * 请求远程数据（通常用于表格组件请求时的回调）
    * @param props 远程数据接口调用时传入的参数
+   * @param useLoading 是否使用加载组件
    */
-  onRequest(props: unknown): Promise<boolean>;
+  onRequest(props: unknown, useLoading: boolean): Promise<boolean>;
   /**
    * 数据变化时做出的行为（通常用于表格组件更新数据后的回调）
    */
-  onDataChanged(): Promise<void>;
+  onDataChanged(useLoading: boolean): Promise<void>;
   /**
    * 刷新数据
    */
-  refresh(): Promise<boolean>;
+  refresh(useLoading: boolean): Promise<boolean>;
   /**
    * 数据更新行为
    * @param updateSupplier 更新数据的远程调用操作
@@ -47,28 +48,41 @@ abstract class BaseDataFetcher<T> implements DataFetcher {
     this.data = data;
   }
 
-  public abstract onRequest(props: unknown): Promise<boolean>;
+  public abstract onRequest(
+    props: unknown,
+    useLoading: boolean | undefined
+  ): Promise<boolean>;
 
-  public async onDataChanged(): Promise<void> {
-    this.loading.value = true;
-    await this.refresh();
+  public async onDataChanged(useLoading?: boolean): Promise<void> {
+    await this.refresh(useLoading);
   }
 
-  public async refresh(): Promise<boolean> {
-    return this.onRequest({
-      filter: null,
-    });
+  public async refresh(
+    useLoading?: boolean,
+    filter?: unknown
+  ): Promise<boolean> {
+    return this.onRequest(
+      {
+        filter,
+      },
+      useLoading
+    );
   }
 
   public async dataUpdate<P>(
     updateSupplier: (data: P) => Promise<AxiosResponse>,
     data: P,
-    forceRefresh = true
+    forceRefresh = true,
+    filter?: unknown
   ): Promise<boolean> {
     this.loading.value = true;
     const response = await updateSupplier(data);
     this.loading.value = false;
-    if (response.data && response.data.code === 200 && (await this.refresh())) {
+    if (
+      response.data &&
+      response.data.code === 200 &&
+      (await this.refresh(true, filter))
+    ) {
       Notify.create({
         type: 'positive',
         position: 'bottom-right',
@@ -79,7 +93,7 @@ abstract class BaseDataFetcher<T> implements DataFetcher {
       return true;
     } else {
       if (forceRefresh) {
-        this.refresh();
+        this.refresh(true, filter);
       }
 
       return false;
@@ -107,8 +121,13 @@ class FullDataFetcher<T> extends BaseDataFetcher<T> {
     return new FullDataFetcher(dataSupplier, loading, data);
   }
 
-  public override async onRequest(filter: unknown): Promise<boolean> {
-    this.loading.value = true;
+  public override async onRequest(
+    filter: unknown,
+    useLoading = true
+  ): Promise<boolean> {
+    if (useLoading) {
+      this.loading.value = true;
+    }
 
     return await this.fetchData(filter);
   }
@@ -164,11 +183,16 @@ class PagedDataFetcher<T> extends BaseDataFetcher<T> {
     return new PagedDataFetcher(dataSupplier, pagination, loading, data);
   };
 
-  public override async onRequest(props: {
-    pagination: Pagination;
-    filter?: unknown;
-  }) {
-    this.loading.value = true;
+  public override async onRequest(
+    props: {
+      pagination: Pagination;
+      filter?: unknown;
+    },
+    useLoading = true
+  ) {
+    if (useLoading) {
+      this.loading.value = true;
+    }
 
     const { page, rowsPerPage } = props.pagination;
 
@@ -189,6 +213,7 @@ class PagedDataFetcher<T> extends BaseDataFetcher<T> {
 
     if (response.data.code === 200) {
       this.data.value = response.data.data.content;
+      this.pagination.value.size = this.data.value.length;
       Pagination.buildZeroIndexedForResponse(this.pagination.value, response);
       this.loading.value = false;
 
@@ -198,13 +223,21 @@ class PagedDataFetcher<T> extends BaseDataFetcher<T> {
     return false;
   };
 
-  public override async refresh(): Promise<boolean> {
-    this.pagination.value.reset();
+  public override async refresh(
+    useLoading = true,
+    filter?: unknown
+  ): Promise<boolean> {
+    if (this.pagination.value.size <= 1) {
+      this.pagination.value.reset();
+    }
 
-    return this.onRequest({
-      pagination: this.pagination.value,
-      filter: null,
-    });
+    return this.onRequest(
+      {
+        pagination: this.pagination.value,
+        filter,
+      },
+      useLoading
+    );
   }
 }
 

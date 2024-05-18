@@ -8,6 +8,7 @@
     narrow-indicator
   >
     <q-tab name="changePassword" label="修改账号信息" />
+    <q-tab name="accessKey" label="访问密钥" />
     <q-tab name="others" label="其他" />
   </q-tabs>
 
@@ -78,6 +79,62 @@
       </div>
     </q-tab-panel>
 
+    <q-tab-panel name="accessKey">
+      <div v-show="!loading" class="no-selection text-h4 text-center">
+        <q-icon v-if="hasAccessKey" name="check_circle" class="text-positive" />
+        <q-icon v-else name="assignment_late" class="text-primary" size="xl" />
+        {{ hasAccessKey ? '已生成访问密钥' : '未生成访问密钥' }}
+      </div>
+
+      <div class="row justify-center q-mt-md">
+        <q-btn
+          :label="hasAccessKey ? '重新生成访问密钥' : '立即生成访问密钥'"
+          :color="hasAccessKey ? 'warning' : 'positive'"
+        >
+          <q-popup-proxy ref="genAccessKeyPopup">
+            <div class="q-pa-md no-selection row items-center">
+              <q-icon size="sm" name="warning" color="negative" />
+              若先前有密钥，会被覆盖，确定要生成密钥？
+              <q-btn
+                @click="onGenAccessKeyBtnClick"
+                :ripple="false"
+                color="primary"
+                dense
+                size="sm"
+                icon="done"
+              />
+            </div>
+          </q-popup-proxy>
+        </q-btn>
+
+        <q-btn
+          v-if="hasAccessKey"
+          class="offset-1"
+          label="移除访问密钥"
+          color="warning"
+        >
+          <q-popup-proxy ref="removeAccessKeyPopup">
+            <div class="q-pa-md no-selection row items-center">
+              <q-icon size="sm" name="warning" color="negative" />
+              确定要移除访问密钥？
+              <q-btn
+                @click="onRemoveAccessKeyBtnClick"
+                :ripple="false"
+                color="primary"
+                dense
+                size="sm"
+                icon="done"
+              />
+            </div>
+          </q-popup-proxy>
+        </q-btn>
+      </div>
+
+      <q-inner-loading :showing="loading">
+        <q-spinner-gears size="50px" color="primary" />
+      </q-inner-loading>
+    </q-tab-panel>
+
     <q-tab-panel name="others">
       <div class="text-h6">敬请期待...</div>
     </q-tab-panel>
@@ -90,6 +147,8 @@ import stringUtils from '@utils/string';
 import loadingUtils from '@utils/loading';
 import { securityService } from '@api/service';
 import noti from '@utils/notification';
+import { useQuasar } from 'quasar';
+import clipboardUtils from '@utils/clipboard';
 
 const username = ref('');
 const password = ref('');
@@ -116,4 +175,51 @@ async function onSubmit() {
   }
   loadingUtils.hide();
 }
+
+// 访问密钥相关
+const hasAccessKey = ref(false);
+const loading = ref(false);
+const accessKeyLoading = ref(false);
+const accessKey = ref('');
+const genAccessKeyPopup = ref();
+const removeAccessKeyPopup = ref();
+const $q = useQuasar();
+
+async function fetchData() {
+  loading.value = true;
+  hasAccessKey.value = (
+    await securityService.getHasAccessKey()
+  ).data.data.value;
+  loading.value = false;
+}
+
+async function onGenAccessKeyBtnClick() {
+  genAccessKeyPopup.value.hide();
+  accessKeyLoading.value = true;
+  accessKey.value = (await securityService.genAccessKey()).data.data.value;
+  accessKeyLoading.value = false;
+  $q.dialog({
+    title: '访问密钥',
+    message: `这是您的访问密钥，请注意保存，后续不再显示。<br/><br/><span style="font-weight: bold;">${accessKey.value}</span>`,
+    html: true,
+    persistent: true,
+    ok: '复制密钥并关闭',
+  }).onOk(() => {
+    clipboardUtils.save(accessKey.value);
+    fetchData();
+  });
+}
+
+async function onRemoveAccessKeyBtnClick() {
+  removeAccessKeyPopup.value.hide();
+  accessKeyLoading.value = true;
+  const resp = await securityService.deleteAccessKey();
+  if (resp.data.code === 200) {
+    noti.success();
+  }
+  accessKeyLoading.value = false;
+  fetchData();
+}
+
+fetchData();
 </script>

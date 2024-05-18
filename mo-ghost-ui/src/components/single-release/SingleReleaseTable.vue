@@ -170,6 +170,18 @@
           <g-label :content="props.row.mtime" :max-length="11" />
         </q-td>
 
+        <q-td key="sortOrder" :props="props">
+          {{ props.row.sortOrder }}
+          <q-popup-edit
+            auto-save
+            @save="onRowSave(props.row)"
+            v-model="props.row.sortOrder"
+            v-slot="scope"
+          >
+            <q-input type="number" v-model="scope.value" dense autofocus />
+          </q-popup-edit>
+        </q-td>
+
         <q-td key="option" :props="props" class="q-gutter-xs">
           <q-btn
             @click="onDownloadBtnClick(props.row)"
@@ -239,18 +251,25 @@ async function onDownloadBtnClick(row: SingleRelease) {
 
 async function onRowSave(row: SingleRelease) {
   await nextTick();
-  dataFetcher.dataUpdate(singleReleaseService.update, row);
+  dataFetcher.dataUpdate(singleReleaseService.update, row, true, {
+    sorts: 'sortOrder,asc',
+  });
 }
 
 async function onFileNameChanged(row: SingleRelease) {
   await nextTick();
-  dataFetcher.dataUpdate(moFileService.rename, {
-    id: row.fileId,
-    name: row.fileName,
-  });
+  dataFetcher.dataUpdate(
+    moFileService.rename,
+    {
+      id: row.fileId,
+      name: row.fileName,
+    },
+    true,
+    { sorts: 'sortOrder,asc' }
+  );
 }
 
-const rows = ref<Array<SingleRelease>>();
+const rows = ref<Array<SingleRelease>>([]);
 const loading = ref(false);
 const pagination = ref();
 const dataFetcher = PagedDataFetcher.of(
@@ -265,11 +284,19 @@ function onResetBtnClick() {
 }
 
 async function onRequest(props: { pagination: Pagination }) {
-  await dataFetcher.onRequest(props);
+  await dataFetcher.onRequest({
+    pagination: props.pagination,
+    filter: {
+      sorts: 'sortOrder,asc',
+    },
+  });
 }
 
 onMounted(() => {
   pagination.value = Pagination.ofDefault();
-  dataFetcher.onRequest({ pagination: pagination.value, filter: null });
+  dataFetcher.onRequest({
+    pagination: pagination.value,
+    filter: { sorts: 'sortOrder,asc' },
+  });
 });
 </script>

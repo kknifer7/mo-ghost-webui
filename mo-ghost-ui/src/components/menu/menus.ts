@@ -29,10 +29,17 @@ export default [
     children: [
       {
         id: 211,
-        icon: 'snippet_folder',
+        icon: 'folder',
         label: '独立文件',
         path: '/version/single-list',
       },
+      // TODO  发布文件（菜单） 待开发
+      // {
+      //   id: 212,
+      //   icon: 'snippet_folder',
+      //   label: '发布文件',
+      //   path: '/version/list',
+      // },
     ],
   },
   {

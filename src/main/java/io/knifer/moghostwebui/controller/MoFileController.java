@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -59,19 +58,6 @@ public class MoFileController {
     @GetMapping("/by-version-id/{versionId}")
     public ApiResult<List<MoFileVO>> getByVersionId(@PathVariable("versionId") Integer versionId){
         return ApiResult.ok(service.listMoFileByVersionId(versionId));
-    }
-
-    /**
-     * 向指定的版本批量新增文件
-     * @param files 上传文件列表
-     * @param versionId 版本ID（可为空）
-     * @return void
-     */
-    @PostMapping({ "/{versionId}", "/" })
-    public ApiResult<Void> addFiles(MultipartFile[] files, @Nullable @PathVariable("versionId") Integer versionId){
-        service.add(files, versionId);
-
-        return ApiResult.ok();
     }
 
     /**
@@ -178,5 +164,18 @@ public class MoFileController {
         service.replace(file, id);
 
         return ApiResult.ok();
+    }
+
+    /**
+     * 根据访问控制密钥下载
+     * @param accessKey 访问控制密钥
+     * @param id 文件信息ID
+     */
+    @GetMapping("/access-key/{accessKey}/{id}")
+    public void downloadByAccessKey(
+            @PathVariable("accessKey") String accessKey,
+            @PathVariable("id") Integer id
+    ) {
+        service.downloadByAccessKey(accessKey, id);
     }
 }

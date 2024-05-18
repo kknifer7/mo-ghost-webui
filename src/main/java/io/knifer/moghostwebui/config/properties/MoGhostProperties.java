@@ -19,6 +19,8 @@ public class MoGhostProperties {
 
     private DebugProperties debug;
 
+    private TaskExecutorProperties taskExecutor;
+
     @Getter
     @Setter
     @ConfigurationProperties("mo-ghost.storage")
@@ -60,5 +62,46 @@ public class MoGhostProperties {
          * 禁用认证
          */
         private boolean disableAuth = false;
+    }
+
+    @Getter
+    @Setter
+    @ConfigurationProperties("mo-ghost.task-executor")
+    public static class TaskExecutorProperties {
+
+        /**
+         * 核心线程数
+         */
+        private Integer corePoolSize = 2;
+
+        /**
+         * 最大线程数
+         */
+        private Integer maxPoolSize = 4;
+
+        /**
+         * 队列容量
+         */
+        private Integer queueCapacity = Integer.MAX_VALUE;
+
+        /**
+         * 最大存活时间
+         */
+        private Integer keepAliveSeconds = 60;
+
+        /**
+         * 是否允许核心线程超时关闭
+         */
+        private Boolean allowCoreThreadTimeOut = false;
+
+        /**
+         * 是否预启动所有核心线程
+         */
+        private Boolean preStartAllCoreThreads = false;
+
+        /**
+         * 线程池名称前缀
+         */
+        private String threadNamePrefix = "mo-ghost-task-executor-";
     }
 }

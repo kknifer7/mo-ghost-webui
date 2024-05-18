@@ -9,6 +9,7 @@ export interface SingleRelease {
   remark: string;
   ctime: string;
   mtime: string;
+  sortOrder: number;
 }
 
 const columns = [
@@ -58,6 +59,12 @@ const columns = [
     name: 'mtime',
     label: '修改时间',
     field: 'mtime',
+    align: 'center',
+  },
+  {
+    name: 'sortOrder',
+    label: '排序值💠',
+    field: 'sortOrder',
     align: 'center',
   },
   {

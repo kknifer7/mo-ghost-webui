@@ -1,24 +1,29 @@
 <template>
   <q-btn
-    @click="addDialog.show()"
+    @click="uploadDialog.show()"
     color="positive"
     label="上传"
     icon="upload"
   />
-  <q-dialog ref="addDialog">
-    <FileAddDialog @finish="onFinish" />
+  <q-dialog ref="uploadDialog">
+    <file-upload-dialog
+      title="文件上传"
+      :businessType="BusinessType.SingleRelease"
+      @finish="onFinish"
+    />
   </q-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import FileAddDialog from '@/version/FileAddDialog.vue';
+import FileUploadDialog from '@/version/FileUploadDialog.vue';
+import { BusinessType } from '@/upload/models';
 
 const emits = defineEmits(['finish']);
-const addDialog = ref();
+const uploadDialog = ref();
 
-const onFinish = () => {
-  addDialog.value.hide();
+function onFinish() {
+  uploadDialog.value.hide();
   emits('finish');
-};
+}
 </script>

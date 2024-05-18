@@ -12,10 +12,17 @@ export interface MoFile {
   originName: string;
   path: string;
   size: string;
+  state: MoFileState;
   remark: string;
   versions: Version[];
   ctime: string;
   mtime: string;
+}
+
+export enum MoFileState {
+  Normal = 'NORMAL',
+  Merging = 'MERGING',
+  MergeFailed = 'MERGE_FAILED',
 }
 
 export const columns = [
@@ -35,6 +42,12 @@ export const columns = [
     name: 'size',
     label: '大小',
     field: 'size',
+    align: 'center',
+  },
+  {
+    name: 'state',
+    label: '状态',
+    field: 'state',
     align: 'center',
   },
   {

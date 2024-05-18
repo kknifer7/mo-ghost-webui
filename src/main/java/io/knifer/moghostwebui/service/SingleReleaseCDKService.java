@@ -93,10 +93,7 @@ public class SingleReleaseCDKService {
         Integer id = request.getId();
         String code;
 
-        if (srIds.isEmpty()){
-            return;
-        }
-        if (releaseRepository.countByIdIn(request.getSrIds()) != srIds.size()){
+        if (!srIds.isEmpty() && releaseRepository.countByIdIn(request.getSrIds()) != srIds.size()){
             MoException.throwOut(ErrorCodes.VALIDATION_FAILED, "SingleReleaseCDK add failed, srId not exists");
         }
         if (id != null){

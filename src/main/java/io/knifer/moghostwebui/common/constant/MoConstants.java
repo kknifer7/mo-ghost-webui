@@ -30,9 +30,22 @@ public final class MoConstants {
      */
     public final static String PACKAGE_DIRECTORY_NAME = "pak";
 
+    /**
+     * 暂存区目录的名称（前面要拼接storagePath）
+     */
+    public final static String WORKING_STORAGE_DIRECTORY_NAME = "working";
+
     public final static String DEFAULT = "DEFAULT";
 
+    /**
+     * IP定位库文件的存放位置
+     */
     public final static String IP_2_REGION_XDB_PATH = "/network/ip2region.xdb";
 
     public final static String YES_STR = "1";
+
+    /**
+     * 默认排序值
+     */
+    public final static Integer DEFAULT_SORT_ORDER = 999;
 }

@@ -32,13 +32,14 @@ repositories {
 
 ext {
     dv = [
-            compress                :       '1.23.0',
+            compress                :       '1.26.1',
             xz                      :       '1.9',
             guava                   :       '32.0.1-jre',
             jaxb                    :       '2.4.0-b180830.0359',
             ip2region               :       '2.7.0',
             tianaiCaptcha           :       '1.4.1',
-            hibernateJpamodelgen    :       '6.4.0.CR1'
+            hibernateJpamodelgen    :       '6.4.0.CR1',
+            tika                    :       '2.9.1'
     ]
 }
 
@@ -52,6 +53,7 @@ dependencies {
     implementation "javax.xml.bind:jaxb-api:$dv.jaxb"
     implementation "cloud.tianai.captcha:tianai-captcha-springboot-starter:$dv.tianaiCaptcha"
     implementation "org.lionsoul:ip2region:$dv.ip2region"
+    implementation "org.apache.tika:tika-core:$dv.tika"
     runtimeOnly "org.xerial:sqlite-jdbc"
     runtimeOnly 'org.hibernate.orm:hibernate-community-dialects'
     compileOnly 'org.projectlombok:lombok'

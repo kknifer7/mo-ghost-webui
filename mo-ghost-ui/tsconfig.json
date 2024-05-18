@@ -8,8 +8,10 @@
       "@utils/*": ["./src/utils/*"],
       "@api/*": ["./src/api/*"],
       "@data/*": ["./src/data/*"],
+      "@tools/*": ["./src/tools/*"],
       "@/*": ["./src/components/*"]
-    }
+    },
+    "esModuleInterop": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "exclude": ["node_modules"]

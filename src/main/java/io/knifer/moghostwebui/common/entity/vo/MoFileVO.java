@@ -1,6 +1,7 @@
 package io.knifer.moghostwebui.common.entity.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.knifer.moghostwebui.common.constant.MoFileState;
 import io.knifer.moghostwebui.common.entity.domain.Version;
 import io.knifer.moghostwebui.common.entity.domain.key.ID;
 import io.knifer.moghostwebui.common.entity.domain.MoFile;
@@ -31,6 +32,8 @@ public class MoFileVO implements ID<Integer> {
 
     private String size;
 
+    private MoFileState state;
+
     private String remark;
 
     private List<VersionVO> versions;
@@ -49,6 +52,7 @@ public class MoFileVO implements ID<Integer> {
         result.setPath(po.getPath());
         result.setSize(FormattingUtil.sizeFormat(po.getSize()));
         result.setRemark(po.getRemark());
+        result.setState(po.getState());
         result.setCtime(po.getCtime());
         result.setMtime(po.getMtime());
         result.setVersions(List.of());
