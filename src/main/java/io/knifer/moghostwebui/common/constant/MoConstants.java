@@ -48,4 +48,6 @@ public final class MoConstants {
      * 默认排序值
      */
     public final static Integer DEFAULT_SORT_ORDER = 999;
+
+    public final static String DE_CAPTCHA_TMP_FILE_NAME_PREFIX = "de-captcha-tmp.";
 }
