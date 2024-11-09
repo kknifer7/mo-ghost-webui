@@ -1,8 +1,10 @@
 package io.knifer.moghostwebui.controller;
 
+import io.knifer.moghostwebui.common.entity.request.OCRRequest;
 import io.knifer.moghostwebui.common.entity.vo.ApiResult;
 import io.knifer.moghostwebui.common.entity.vo.ValueVO;
 import io.knifer.moghostwebui.service.SpiderAssistService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +25,11 @@ public class SpiderAssistController {
 
     /**
      * OCR
-     * @param imageBase64 图片base64
+     * @param request 参数
      * @return 图片中的文字
      */
     @PostMapping("/ocr")
-    public ApiResult<ValueVO<String>> ocr(@RequestBody String imageBase64) {
-        return ApiResult.ok(ValueVO.from(service.ocr(imageBase64)));
+    public ApiResult<ValueVO<String>> ocr(@Valid @RequestBody OCRRequest request) {
+        return ApiResult.ok(ValueVO.from(service.ocr(request)));
     }
 }

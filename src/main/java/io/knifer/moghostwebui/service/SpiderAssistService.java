@@ -2,6 +2,7 @@ package io.knifer.moghostwebui.service;
 
 import io.knifer.moghostwebui.common.constant.ErrorCodes;
 import io.knifer.moghostwebui.common.constant.SecurityConstants;
+import io.knifer.moghostwebui.common.entity.request.OCRRequest;
 import io.knifer.moghostwebui.common.exception.MoException;
 import io.knifer.moghostwebui.common.tool.ocr.Image2TextOCR;
 import io.knifer.moghostwebui.common.util.ServletUtil;
@@ -22,10 +23,10 @@ public class SpiderAssistService {
     private final Image2TextOCR ocr;
     private final SingleReleaseCDKRepository singleReleaseCDKRepository;
 
-    public String ocr(String imageBase64) {
+    public String ocr(OCRRequest request) {
         validateMoGhostID();
 
-        return ocr.doOCR(imageBase64);
+        return ocr.doOCR(request.getImage());
     }
 
     @SuppressWarnings("ConstantConditions")
