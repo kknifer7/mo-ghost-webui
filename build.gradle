@@ -40,6 +40,7 @@ ext {
             tianaiCaptcha           :       '1.4.1',
             hibernateJpamodelgen    :       '6.4.0.CR1',
             tika                    :       '2.9.1',
+            fastjson                :       '2.0.56',
             rapidocr                :       '0.0.7',
             rapidocrLinux           :       '1.2.2',
     ]
@@ -56,9 +57,7 @@ dependencies {
     implementation "cloud.tianai.captcha:tianai-captcha-springboot-starter:$dv.tianaiCaptcha"
     implementation "org.lionsoul:ip2region:$dv.ip2region"
     implementation "org.apache.tika:tika-core:$dv.tika"
-    implementation "io.github.mymonstercat:rapidocr:$dv.rapidocr"
-    implementation "io.github.mymonstercat:rapidocr-onnx-platform:$dv.rapidocr"
-    implementation "io.github.mymonstercat:rapidocr-onnx-linux-x86_64:$dv.rapidocrLinux"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     runtimeOnly "org.xerial:sqlite-jdbc"
     runtimeOnly 'org.hibernate.orm:hibernate-community-dialects'
     compileOnly 'org.projectlombok:lombok'
